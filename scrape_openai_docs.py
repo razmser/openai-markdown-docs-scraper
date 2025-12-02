@@ -233,8 +233,12 @@ def fix_links(text):
     return text
 
 
-def process_code_element(code_elem):
-    """Process a code/pre element, removing line numbers and returning markdown."""
+def process_code_element(code_elem, include_title=False, code_sample_container=None):
+    """Process a code/pre element, removing line numbers and returning markdown.
+    
+    If include_title=True and code_sample_container is provided, will look for
+    a code-sample-title and include it as a header.
+    """
     if not code_elem:
         return None
     
@@ -269,7 +273,17 @@ def process_code_element(code_elem):
         elif code_text.strip().startswith('{') or code_text.strip().startswith('['):
             lang = 'json'
     
-    return f"```{lang}\n{code_text}\n```"
+    result = f"```{lang}\n{code_text}\n```"
+    
+    # Check for title if requested
+    if include_title and code_sample_container:
+        title_elem = code_sample_container.find('div', class_='code-sample-title')
+        if title_elem:
+            title = title_elem.get_text(strip=True)
+            if title:
+                result = f"### {title}\n\n{result}"
+    
+    return result
 
 
 def build_param_hierarchy(main_content):
@@ -306,10 +320,10 @@ def build_param_hierarchy(main_content):
     return all_param_ids, get_parent_id_from_structure, get_nesting_depth
 
 
-def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=3):
+def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=4):
     """Convert a single param-row to markdown.
     
-    Top-level params (depth 0) use headings (H3 by default).
+    Top-level params (depth 0) use headings (H4 by default).
     All nested params use indented bullet lists.
     """
     param_id = row.get('id', '')
@@ -343,6 +357,10 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=3):
     elif param_reqd:
         optl_text = "Required"
     
+    # Get deprecated
+    param_depr = header.find('div', class_='param-depr')
+    depr_text = "Deprecated" if param_depr else ""
+    
     # Get default
     param_default = header.find('div', class_='param-default')
     default_text = param_default.get_text(strip=True) if param_default else ""
@@ -353,6 +371,8 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=3):
         header_parts.append(param_type)
     if optl_text:
         header_parts.append(optl_text)
+    if depr_text:
+        header_parts.append(depr_text)
     if default_text:
         header_parts.append(default_text)
     
@@ -410,7 +430,7 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=3):
     return f"{header_line}\n{desc_md}\n" if desc_md else f"{header_line}\n"
 
 
-def process_param_table_recursive(table_elem, get_nesting_depth, h, seen_ids, base_heading_level=3):
+def process_param_table_recursive(table_elem, get_nesting_depth, h, seen_ids, base_heading_level=4):
     """Process a param-table and all its nested param-rows."""
     lines = []
     
@@ -500,18 +520,24 @@ def parse_streaming_page(soup, h):
             # Process param-tables
             seen_ids = set()
             param_tables = section_left.find_all('div', class_='param-table', recursive=False)
-            for table in param_tables:
-                lines = process_param_table_recursive(table, get_nesting_depth, h, seen_ids)
-                markdown_lines.extend(lines)
+            if param_tables:
+                markdown_lines.append("### Parameters\n")
+                for table in param_tables:
+                    lines = process_param_table_recursive(table, get_nesting_depth, h, seen_ids)
+                    markdown_lines.extend(lines)
         
         # Process section-right (code examples)
         section_right = endpoint_div.find('div', class_='section-right')
         if section_right:
-            for pre in section_right.find_all('pre'):
-                code_elem = pre.find('code') or pre
-                code_md = process_code_element(code_elem)
-                if code_md:
-                    markdown_lines.append(f"{code_md}\n")
+            # Find code-sample divs to get titles
+            code_samples = section_right.find_all('div', class_='code-sample')
+            for code_sample in code_samples:
+                pre = code_sample.find('pre')
+                if pre:
+                    code_elem = pre.find('code') or pre
+                    code_md = process_code_element(code_elem, include_title=True, code_sample_container=code_sample)
+                    if code_md:
+                        markdown_lines.append(f"{code_md}\n")
     
     if not markdown_lines:
         return None
@@ -554,7 +580,7 @@ def parse_endpoint_page(soup, h):
     # Build param hierarchy
     _, _, get_nesting_depth = build_param_hierarchy(main_content)
     
-    def process_param_section(section_elem, base_heading_level=3):
+    def process_param_section(section_elem, base_heading_level=4):
         """Process a param-section and its nested param-tables."""
         lines = []
         
@@ -624,11 +650,23 @@ def parse_endpoint_page(soup, h):
                         lines = process_param_section(ps)
                         markdown_lines.extend(lines)
                     
-                    for pre in elem.find_all('pre'):
-                        code_elem = pre.find('code') or pre
-                        code_md = process_code_element(code_elem)
-                        if code_md:
-                            markdown_lines.append(f"{code_md}\n")
+                    # Find code-sample divs to get titles
+                    code_samples = elem.find_all('div', class_='code-sample')
+                    if code_samples:
+                        for code_sample in code_samples:
+                            pre = code_sample.find('pre')
+                            if pre:
+                                code_elem = pre.find('code') or pre
+                                code_md = process_code_element(code_elem, include_title=True, code_sample_container=code_sample)
+                                if code_md:
+                                    markdown_lines.append(f"{code_md}\n")
+                    else:
+                        # Fallback to finding pre directly
+                        for pre in elem.find_all('pre'):
+                            code_elem = pre.find('code') or pre
+                            code_md = process_code_element(code_elem)
+                            if code_md:
+                                markdown_lines.append(f"{code_md}\n")
         else:
             h2 = section.find('h2')
             if h2:
@@ -650,11 +688,23 @@ def parse_endpoint_page(soup, h):
                 lines = process_param_section(ps)
                 markdown_lines.extend(lines)
             
-            for pre in section.find_all('pre'):
-                code_elem = pre.find('code') or pre
-                code_md = process_code_element(code_elem)
-                if code_md:
-                    markdown_lines.append(f"{code_md}\n")
+            # Find code-sample divs to get titles
+            code_samples = section.find_all('div', class_='code-sample')
+            if code_samples:
+                for code_sample in code_samples:
+                    pre = code_sample.find('pre')
+                    if pre:
+                        code_elem = pre.find('code') or pre
+                        code_md = process_code_element(code_elem, include_title=True, code_sample_container=code_sample)
+                        if code_md:
+                            markdown_lines.append(f"{code_md}\n")
+            else:
+                # Fallback to finding pre directly
+                for pre in section.find_all('pre'):
+                    code_elem = pre.find('code') or pre
+                    code_md = process_code_element(code_elem)
+                    if code_md:
+                        markdown_lines.append(f"{code_md}\n")
     
     # Fallback if no endpoint sections found
     if not endpoint_sections:
