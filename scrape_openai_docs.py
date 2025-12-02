@@ -30,6 +30,18 @@ PAGES_TO_SCRAPE = [
         "url": "https://platform.openai.com/docs/api-reference/responses-streaming?lang=curl",
         "name": "responses-streaming",
     },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/conversations?lang=curl",
+        "name": "conversations",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/chat?lang=curl",
+        "name": "chat",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/chat-streaming?lang=curl",
+        "name": "chat-streaming",
+    },
 ]
 
 # Directories for output
