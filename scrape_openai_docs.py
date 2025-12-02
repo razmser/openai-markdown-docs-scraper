@@ -306,15 +306,14 @@ def build_param_hierarchy(main_content):
     return all_param_ids, get_parent_id_from_structure, get_nesting_depth
 
 
-def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=4):
-    """Convert a single param-row to markdown."""
+def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=3):
+    """Convert a single param-row to markdown.
+    
+    Top-level params (depth 0) use headings (H3 by default).
+    All nested params use indented bullet lists.
+    """
     param_id = row.get('id', '')
     depth = get_nesting_depth(param_id) if param_id else 0
-    
-    heading_level = min(base_heading_level + depth, 6)
-    extra_depth = max(0, (base_heading_level + depth) - 6)
-    heading_prefix = '#' * heading_level
-    indent = '  ' * extra_depth
     
     header = row.find('div', class_='param-row-header')
     if not header:
@@ -348,7 +347,7 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=4):
     param_default = header.find('div', class_='param-default')
     default_text = param_default.get_text(strip=True) if param_default else ""
     
-    # Build header
+    # Build header parts
     header_parts = [name]
     if param_type:
         header_parts.append(param_type)
@@ -357,10 +356,17 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=4):
     if default_text:
         header_parts.append(default_text)
     
-    if extra_depth > 0:
-        header_line = f"{indent}- **{' - '.join(header_parts)}**"
-    else:
+    # Top-level params use headings, nested params use bullet lists
+    if depth == 0:
+        heading_prefix = '#' * base_heading_level
         header_line = f"{heading_prefix} {' - '.join(header_parts)}"
+        indent = ""
+        desc_indent = ""
+    else:
+        # Nested params use bullet lists with indentation
+        indent = "  " * (depth - 1)
+        header_line = f"{indent}- **{' - '.join(header_parts)}**"
+        desc_indent = indent + "  "
     
     # Get description
     param_desc = row.find('div', class_='param-desc')
@@ -396,14 +402,15 @@ def param_row_to_markdown(row, get_nesting_depth, h, base_heading_level=4):
         for code_block in code_blocks:
             desc_md += f"\n\n{code_block}"
         
-        if extra_depth > 0:
+        # Indent description for nested params
+        if depth > 0:
             desc_lines = desc_md.split('\n')
-            desc_md = '\n'.join(f"{indent}  {line}" if line.strip() else line for line in desc_lines)
+            desc_md = '\n'.join(f"{desc_indent}{line}" if line.strip() else line for line in desc_lines)
     
     return f"{header_line}\n{desc_md}\n" if desc_md else f"{header_line}\n"
 
 
-def process_param_table_recursive(table_elem, get_nesting_depth, h, seen_ids, base_heading_level=4):
+def process_param_table_recursive(table_elem, get_nesting_depth, h, seen_ids, base_heading_level=3):
     """Process a param-table and all its nested param-rows."""
     lines = []
     
@@ -547,7 +554,7 @@ def parse_endpoint_page(soup, h):
     # Build param hierarchy
     _, _, get_nesting_depth = build_param_hierarchy(main_content)
     
-    def process_param_section(section_elem, base_heading_level=4):
+    def process_param_section(section_elem, base_heading_level=3):
         """Process a param-section and its nested param-tables."""
         lines = []
         
