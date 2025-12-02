@@ -42,6 +42,194 @@ PAGES_TO_SCRAPE = [
         "url": "https://platform.openai.com/docs/api-reference/chat-streaming?lang=curl",
         "name": "chat-streaming",
     },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/webhook-events",
+        "name": "webhook-events",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/audio?lang=curl",
+        "name": "audio",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/videos?lang=curl",
+        "name": "videos",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/images?lang=curl",
+        "name": "images",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/images-streaming?lang=curl",
+        "name": "images-streaming",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/embeddings?lang=curl",
+        "name": "embeddings",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/evals?lang=curl",
+        "name": "evals",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/evals?lang=curl",
+        "name": "evals",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/fine-tuning?lang=curl",
+        "name": "fine-tuning",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/graders?lang=curl",
+        "name": "graders",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/files?lang=curl",
+        "name": "files",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/uploads?lang=curl",
+        "name": "uploads",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/models?lang=curl",
+        "name": "models",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/moderations?lang=curl",
+        "name": "moderations",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/vector-stores?lang=curl",
+        "name": "vector-stores",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/vector-stores-files?lang=curl",
+        "name": "vector-stores-files",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/vector-stores-file-batches?lang=curl",
+        "name": "vector-stores-file-batches",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/chatkit?lang=curl",
+        "name": "chatkit",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/containers?lang=curl",
+        "name": "containers",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/container-files?lang=curl",
+        "name": "container-files",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/realtime?lang=curl",
+        "name": "realtime",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/realtime-sessions?lang=curl",
+        "name": "realtime-sessions",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/realtime-calls?lang=curl",
+        "name": "realtime-calls",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/realtime-client-events?lang=curl",
+        "name": "realtime-client-events",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/realtime-server-events?lang=curl",
+        "name": "realtime-server-events",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/assistants?lang=curl",
+        "name": "assistants",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/threads?lang=curl",
+        "name": "threads",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/messages?lang=curl",
+        "name": "messages",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/runs?lang=curl",
+        "name": "runs",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/run-steps?lang=curl",
+        "name": "run-steps",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/assistants-streaming?lang=curl",
+        "name": "assistants-streaming",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/administration?lang=curl",
+        "name": "administration",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/admin-api-keys?lang=curl",
+        "name": "admin-api-keys",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/invite?lang=curl",
+        "name": "invite",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/users?lang=curl",
+        "name": "users",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/groups?lang=curl",
+        "name": "groups",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/roles?lang=curl",
+        "name": "roles",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/role-assignments?lang=curl",
+        "name": "role-assignments",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/projects?lang=curl",
+        "name": "projects",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/project-users?lang=curl",
+        "name": "project-users",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/project-groups?lang=curl",
+        "name": "project-groups",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/project-service-accounts?lang=curl",
+        "name": "project-service-accounts",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/project-api-keys?lang=curl",
+        "name": "project-api-keys",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/project-rate-limits?lang=curl",
+        "name": "project-rate-limits",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/audit-logs?lang=curl",
+        "name": "audit-logs",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/usage?lang=curl",
+        "name": "usage",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/certificates?lang=curl",
+        "name": "certificates",
+    },
 ]
 
 # Directories for output
@@ -124,7 +312,7 @@ def download_page_with_playwright(url: str, cache_file: Path) -> str:
         # Expand all "Show properties" and "Show possible types" buttons
         print("Expanding all collapsible sections...")
         try:
-            max_expansion_rounds = 10
+            max_expansion_rounds = 30
             total_expanded = 0
             
             for round_num in range(max_expansion_rounds):
