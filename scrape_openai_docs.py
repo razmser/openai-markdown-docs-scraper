@@ -923,6 +923,60 @@ def parse_endpoint_page(soup, h):
     return markdown.strip()
 
 
+def parse_introduction_page(soup, h):
+    """Parse introduction/overview page with sections containing markdown content."""
+    markdown_lines = []
+    
+    main_content = soup.find('main')
+    if not main_content:
+        return None
+    
+    api_ref = main_content.find('div', class_='api-ref')
+    if not api_ref:
+        return None
+    
+    # Clean up
+    for nav in main_content.find_all(['nav', 'aside']):
+        nav.decompose()
+    for script in main_content(["script", "style", "noscript"]):
+        script.decompose()
+    
+    # Find sections
+    sections = api_ref.find_all('div', class_='section', recursive=False)
+    
+    for section in sections:
+        # Get markdown content (which already includes the heading and code blocks)
+        md_content = section.find('div', class_='docs-markdown-content')
+        if md_content:
+            # Remove code-sample divs before processing to avoid line numbers from html2text
+            # We'll add them back properly formatted
+            code_samples = md_content.find_all('div', class_='code-sample')
+            code_blocks = []
+            for code_sample in code_samples:
+                pre = code_sample.find('pre')
+                if pre:
+                    code_elem = pre.find('code') or pre
+                    code_md = process_code_element(code_elem, include_title=True, code_sample_container=code_sample)
+                    if code_md:
+                        code_blocks.append(code_md)
+                # Remove from DOM to prevent html2text from processing it
+                code_sample.decompose()
+            
+            # Process the markdown content (now without code blocks)
+            content_md = h.handle(str(md_content)).strip()
+            content_md = fix_links(content_md)
+            content_md = content_md.replace('\\_', '_').replace('\\(', '(').replace('\\)', ')')
+            markdown_lines.append(content_md + "\n")
+            
+            # Add properly formatted code blocks
+            for code_block in code_blocks:
+                markdown_lines.append(f"{code_block}\n")
+    
+    markdown = '\n'.join(markdown_lines)
+    markdown = re.sub(r'\n{3,}', '\n\n', markdown)
+    return markdown.strip()
+
+
 def parse_openai_docs(html_content: str) -> str:
     """Parse OpenAI docs HTML and convert to markdown.
     
@@ -936,13 +990,27 @@ def parse_openai_docs(html_content: str) -> str:
     if main:
         api_ref = main.find('div', class_='api-ref')
         if api_ref:
-            # Check if it's a streaming-style page (sections with endpoints)
             sections = api_ref.find_all('div', class_='section', recursive=False)
+            
+            # Check if it's a streaming-style page (sections with endpoints)
             has_endpoint_divs = any(s.find('div', class_='endpoint') for s in sections)
             if has_endpoint_divs:
                 result = parse_streaming_page(soup, h)
                 if result:
                     return result
+            
+            # Check if it's an introduction page (sections with only markdown content, no endpoints)
+            if sections:
+                has_only_markdown = all(
+                    s.find('div', class_='docs-markdown-content') and 
+                    not s.find('div', class_='endpoint') and
+                    not s.find('div', class_='param-section')
+                    for s in sections
+                )
+                if has_only_markdown:
+                    result = parse_introduction_page(soup, h)
+                    if result:
+                        return result
     
     # Fall back to endpoint page parser
     return parse_endpoint_page(soup, h)
