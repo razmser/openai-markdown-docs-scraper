@@ -23,212 +23,216 @@ except ImportError:
 # URLs to scrape with their output names
 PAGES_TO_SCRAPE = [
     {
+        "url": "https://platform.openai.com/docs/api-reference?lang=curl",
+        "name": "api-reference",
+    },
+    {
         "url": "https://platform.openai.com/docs/api-reference/responses?lang=curl",
-        "name": "responses",
+        "name": "responses-api/responses",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/responses-streaming?lang=curl",
-        "name": "responses-streaming",
+        "name": "responses-api/responses-streaming",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/conversations?lang=curl",
-        "name": "conversations",
+        "name": "responses-api/conversations",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/chat?lang=curl",
-        "name": "chat",
+        "name": "chat-completions/chat",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/chat-streaming?lang=curl",
-        "name": "chat-streaming",
+        "name": "chat-completions/chat-streaming",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/webhook-events",
-        "name": "webhook-events",
+        "name": "webhooks/webhook-events",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/audio?lang=curl",
-        "name": "audio",
+        "name": "platform-api/audio",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/videos?lang=curl",
-        "name": "videos",
+        "name": "platform-api/videos",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/images?lang=curl",
-        "name": "images",
+        "name": "platform-api/images",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/images-streaming?lang=curl",
-        "name": "images-streaming",
+        "name": "platform-api/images-streaming",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/embeddings?lang=curl",
-        "name": "embeddings",
+        "name": "platform-api/embeddings",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/evals?lang=curl",
-        "name": "evals",
-    },
-    {
-        "url": "https://platform.openai.com/docs/api-reference/evals?lang=curl",
-        "name": "evals",
+        "name": "platform-api/evals",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/fine-tuning?lang=curl",
-        "name": "fine-tuning",
+        "name": "platform-api/fine-tuning",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/graders?lang=curl",
-        "name": "graders",
+        "name": "platform-api/graders",
+    },
+    {
+        "url": "https://platform.openai.com/docs/api-reference/batch?lang=curl",
+        "name": "platform-api/batch",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/files?lang=curl",
-        "name": "files",
+        "name": "platform-api/files",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/uploads?lang=curl",
-        "name": "uploads",
+        "name": "platform-api/uploads",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/models?lang=curl",
-        "name": "models",
+        "name": "platform-api/models",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/moderations?lang=curl",
-        "name": "moderations",
+        "name": "platform-api/moderations",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/vector-stores?lang=curl",
-        "name": "vector-stores",
+        "name": "vector-stores/vector-stores",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/vector-stores-files?lang=curl",
-        "name": "vector-stores-files",
+        "name": "vector-stores/vector-stores-files",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/vector-stores-file-batches?lang=curl",
-        "name": "vector-stores-file-batches",
+        "name": "vector-stores/vector-stores-file-batches",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/chatkit?lang=curl",
-        "name": "chatkit",
+        "name": "chatkit/chatkit",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/containers?lang=curl",
-        "name": "containers",
+        "name": "containers/containers",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/container-files?lang=curl",
-        "name": "container-files",
+        "name": "containers/container-files",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/realtime?lang=curl",
-        "name": "realtime",
+        "name": "realtime/realtime",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/realtime-sessions?lang=curl",
-        "name": "realtime-sessions",
+        "name": "realtime/realtime-sessions",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/realtime-calls?lang=curl",
-        "name": "realtime-calls",
+        "name": "realtime/realtime-calls",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/realtime-client-events?lang=curl",
-        "name": "realtime-client-events",
+        "name": "realtime/realtime-client-events",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/realtime-server-events?lang=curl",
-        "name": "realtime-server-events",
+        "name": "realtime/realtime-server-events",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/assistants?lang=curl",
-        "name": "assistants",
+        "name": "assistants/assistants",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/threads?lang=curl",
-        "name": "threads",
+        "name": "assistants/threads",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/messages?lang=curl",
-        "name": "messages",
+        "name": "assistants/messages",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/runs?lang=curl",
-        "name": "runs",
+        "name": "assistants/runs",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/run-steps?lang=curl",
-        "name": "run-steps",
+        "name": "assistants/run-steps",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/assistants-streaming?lang=curl",
-        "name": "assistants-streaming",
+        "name": "assistants/assistants-streaming",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/administration?lang=curl",
-        "name": "administration",
+        "name": "administration/administration",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/admin-api-keys?lang=curl",
-        "name": "admin-api-keys",
+        "name": "administration/admin-api-keys",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/invite?lang=curl",
-        "name": "invite",
+        "name": "administration/invite",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/users?lang=curl",
-        "name": "users",
+        "name": "administration/users",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/groups?lang=curl",
-        "name": "groups",
+        "name": "administration/groups",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/roles?lang=curl",
-        "name": "roles",
+        "name": "administration/roles",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/role-assignments?lang=curl",
-        "name": "role-assignments",
+        "name": "administration/role-assignments",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/projects?lang=curl",
-        "name": "projects",
+        "name": "administration/projects",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/project-users?lang=curl",
-        "name": "project-users",
+        "name": "administration/project-users",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/project-groups?lang=curl",
-        "name": "project-groups",
+        "name": "administration/project-groups",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/project-service-accounts?lang=curl",
-        "name": "project-service-accounts",
+        "name": "administration/project-service-accounts",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/project-api-keys?lang=curl",
-        "name": "project-api-keys",
+        "name": "administration/project-api-keys",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/project-rate-limits?lang=curl",
-        "name": "project-rate-limits",
+        "name": "administration/project-rate-limits",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/audit-logs?lang=curl",
-        "name": "audit-logs",
+        "name": "administration/audit-logs",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/usage?lang=curl",
-        "name": "usage",
+        "name": "administration/usage",
     },
     {
         "url": "https://platform.openai.com/docs/api-reference/certificates?lang=curl",
-        "name": "certificates",
+        "name": "administration/certificates",
     },
 ]
 
@@ -951,6 +955,10 @@ def process_single_page(page_config: dict, force_download: bool = False):
     
     cache_file = SCRAPED_DIR / f"{name}.html"
     output_file = DOCS_DIR / f"{name}.md"
+    
+    # Create parent directories if they don't exist
+    cache_file.parent.mkdir(parents=True, exist_ok=True)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
     
     print(f"\n{'='*60}")
     print(f"Processing: {name}")
