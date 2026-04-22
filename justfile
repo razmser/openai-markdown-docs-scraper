@@ -7,24 +7,24 @@ default:
 # Install dependencies
 install:
     pip install -r requirements.txt
-    playwright install chromium
 
-# Run the scraper (downloads and converts all pages)
+# Run the scraper (discovers URLs via browser, then fetches markdown)
 scrape:
     python scrape_openai_docs.py
 
-# Clean cached HTML files (forces re-download on next scrape)
-clean-cache:
-    rm -rf scraped/
+# Force re-download all pages
+scrape-force:
+    python scrape_openai_docs.py --force
 
-# Clean generated markdown files
-clean-docs:
+# Run without browser discovery (uses cached URLs)
+scrape-cached:
+    python scrape_openai_docs.py --no-discover
+
+# Clean generated markdown files and URL cache
+clean:
     rm -rf docs/
 
-# Clean everything
-clean: clean-cache clean-docs
-
-# Copy generated docs to openai-markdown-docs repo (adjust path as needed)
+# Copy generated docs to openai-markdown-docs repo
 export docs_repo="../openai-markdown-docs":
     rm -rf {{docs_repo}}/api-reference
     cp -r docs {{docs_repo}}/api-reference
