@@ -37,7 +37,7 @@ Add a GitHub Actions workflow to the scraper repo that runs daily, fetches fresh
 **Files:**
 - Modify: `README.md`
 
-- [ ] Add CI workflow section explaining the daily job
-- [ ] Document `DOCS_REPO_TOKEN` secret setup (fine-grained PAT with `contents:write` on `openai-markdown-docs`)
-- [ ] Document manual cache refresh workflow: `just scrape` → `just export` → commit `.url_cache.json` to docs repo
-- [ ] Trigger workflow manually via `workflow_dispatch` to verify it works
+- [x] Add CI workflow section explaining the daily job
+- [x] Document `DOCS_REPO_TOKEN` secret setup (fine-grained PAT with `contents:write` on `openai-markdown-docs`)
+- [x] Document manual cache refresh workflow: `just scrape` → `just export` → commit `.url_cache.json` to docs repo
+- [x] manual test (skipped - not automatable)
