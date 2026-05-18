@@ -45,7 +45,8 @@ jobs:
       - name: Export docs
         run: |
           rm -rf openai-markdown-docs/api-reference
-          cp -r docs openai-markdown-docs/api-reference
+          mkdir -p openai-markdown-docs/api-reference
+          rsync -a --exclude='plans/' docs/ openai-markdown-docs/api-reference/
 
       - name: Commit and push if changed
         env:
