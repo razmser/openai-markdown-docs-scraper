@@ -5,13 +5,13 @@ Scrapes OpenAI API documentation and converts it to Markdown format.
 ## Prerequisites
 
 - Python 3.8+
+- [agent-browser](https://github.com/nichochar/agent-browser) (for URL discovery)
 - [just](https://github.com/casey/just) (optional, for convenience commands)
 
 ## Setup
 
 ```bash
 pip install -r requirements.txt
-playwright install chromium
 ```
 
 Or with just:
@@ -31,8 +31,9 @@ just scrape
 ```
 
 This will:
-1. Download HTML pages to `scraped/` (cached for iterative development)
-2. Convert to Markdown in `docs/`
+1. Use `agent-browser` to discover all API method URLs from the sidebar
+2. Fetch raw Markdown from each URL
+3. Save files to `docs/`
 
 ## Updating openai-markdown-docs
 
@@ -48,9 +49,9 @@ This copies the generated `docs/` folder to `../openai-markdown-docs/api-referen
 
 | Command | Description |
 |---------|-------------|
-| `just install` | Install dependencies and Playwright |
+| `just install` | Install Python dependencies |
 | `just scrape` | Run the scraper |
-| `just clean-cache` | Remove cached HTML (forces re-download) |
-| `just clean-docs` | Remove generated Markdown |
-| `just clean` | Remove both cache and docs |
+| `just scrape-force` | Force re-download all pages |
+| `just scrape-cached` | Run with cached URLs (no browser) |
+| `just clean` | Remove generated docs and URL cache |
 | `just export` | Copy docs to openai-markdown-docs repo |

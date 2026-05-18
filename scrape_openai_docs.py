@@ -33,6 +33,12 @@ def discover_urls() -> list[dict]:
     """Use agent-browser to extract all API method URLs from the docs sidebar."""
     print("Discovering URLs via agent-browser...")
 
+    print("  Opening https://developers.openai.com/api/reference ...")
+    subprocess.run(
+        ["agent-browser", "open", "https://developers.openai.com/api/reference"],
+        capture_output=True, text=True, timeout=120
+    )
+
     js = """
     (() => {
         const links = document.querySelectorAll('nav a[href*="/api/reference/"]');
