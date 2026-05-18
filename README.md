@@ -55,3 +55,28 @@ This copies the generated `docs/` folder to `../openai-markdown-docs/api-referen
 | `just scrape-cached` | Run with cached URLs (no browser) |
 | `just clean` | Remove generated docs and URL cache |
 | `just export` | Copy docs to openai-markdown-docs repo |
+
+## CI Workflow
+
+A GitHub Actions workflow (`.github/workflows/scrape.yml`) runs daily at 06:00 UTC and pushes updated docs to [openai-markdown-docs](https://github.com/razmser/openai-markdown-docs).
+
+The workflow:
+1. Checks out this repo and sets up Python 3.12
+2. Clones `openai-markdown-docs` using a PAT
+3. Copies `.url_cache.json` from the docs repo
+4. Runs the scraper with `--no-discover` (uses cached URLs only)
+5. Exports docs and commits any changes
+
+### Secret setup
+
+The workflow requires a `DOCS_REPO_TOKEN` repository secret — a fine-grained personal access token with **contents:write** permission on the `openai-markdown-docs` repo.
+
+### Manual cache refresh
+
+The URL cache (`.url_cache.json`) lives in `openai-markdown-docs` at `api-reference/.url_cache.json`. To refresh it manually:
+
+```bash
+just scrape        # re-discovers all URLs and updates the cache
+just export        # copies docs/ → ../openai-markdown-docs/api-reference/
+# then commit .url_cache.json in the docs repo
+```

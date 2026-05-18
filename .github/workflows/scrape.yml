@@ -1,0 +1,66 @@
+name: Daily Scrape
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: daily-scrape
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout scraper repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Clone openai-markdown-docs
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/razmser/openai-markdown-docs.git" openai-markdown-docs
+          git -C openai-markdown-docs remote set-url origin https://github.com/razmser/openai-markdown-docs.git
+
+      - name: Copy URL cache from docs repo
+        run: |
+          mkdir -p docs
+          if [ -f openai-markdown-docs/api-reference/.url_cache.json ]; then
+            cp openai-markdown-docs/api-reference/.url_cache.json docs/.url_cache.json
+          fi
+
+      - name: Run scraper
+        run: python scrape_openai_docs.py --no-discover || true
+
+      - name: Export docs
+        run: |
+          rm -rf openai-markdown-docs/api-reference
+          cp -r docs openai-markdown-docs/api-reference
+
+      - name: Commit and push if changed
+        env:
+          GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
+        run: |
+          cd openai-markdown-docs
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: update $(date +%Y-%m-%d)"
+            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/razmser/openai-markdown-docs.git"
+            git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" || true
+            git push origin "$(git rev-parse --abbrev-ref HEAD)"
+            git remote set-url origin https://github.com/razmser/openai-markdown-docs.git
+          fi
