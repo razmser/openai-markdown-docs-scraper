@@ -29,8 +29,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
         run: |
-          git clone "https://x-access-token:${GH_TOKEN}@github.com/razmser/openai-markdown-docs.git" openai-markdown-docs
-          git -C openai-markdown-docs remote set-url origin https://github.com/razmser/openai-markdown-docs.git
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "DOCS_REPO_TOKEN is not set"
+            exit 1
+          fi
+
+          git clone https://github.com/razmser/openai-markdown-docs.git openai-markdown-docs
+          branch="$(git -C openai-markdown-docs rev-parse --abbrev-ref HEAD)"
+          git -C openai-markdown-docs remote set-url --push origin "https://x-access-token:${GH_TOKEN}@github.com/razmser/openai-markdown-docs.git"
+
+          if ! git -C openai-markdown-docs push --dry-run origin "HEAD:refs/heads/${branch}" >/dev/null 2>&1; then
+            echo "DOCS_REPO_TOKEN can read razmser/openai-markdown-docs but cannot push to it."
+            echo "Create a fine-grained PAT for that repository with Contents: Read and write, then update the DOCS_REPO_TOKEN secret."
+            exit 1
+          fi
 
       - name: Copy URL cache from docs repo
         run: |
@@ -49,10 +61,9 @@ jobs:
           rsync -a --exclude='plans/' docs/ openai-markdown-docs/api-reference/
 
       - name: Commit and push if changed
-        env:
-          GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}
         run: |
           cd openai-markdown-docs
+          branch="$(git rev-parse --abbrev-ref HEAD)"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
@@ -60,8 +71,6 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "docs: update $(date +%Y-%m-%d)"
-            git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/razmser/openai-markdown-docs.git"
-            git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" || true
-            git push origin "$(git rev-parse --abbrev-ref HEAD)"
-            git remote set-url origin https://github.com/razmser/openai-markdown-docs.git
+            git pull --rebase origin "${branch}"
+            git push origin "HEAD:${branch}"
           fi
