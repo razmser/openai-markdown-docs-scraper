@@ -44,15 +44,11 @@ jobs:
             exit 1
           fi
 
-      - name: Copy URL cache from docs repo
-        run: |
-          mkdir -p docs
-          if [ -f openai-markdown-docs/api-reference/.url_cache.json ]; then
-            cp openai-markdown-docs/api-reference/.url_cache.json docs/.url_cache.json
-          fi
-
+      # Discovery reads two manifests over plain HTTP, so it runs here as-is.
+      # It must run: with a frozen page list, newly published endpoints and
+      # whole new resources never reach the docs repo.
       - name: Run scraper
-        run: python scrape_openai_docs.py --no-discover || true
+        run: python scrape_openai_docs.py
 
       - name: Export docs
         run: |

@@ -8,24 +8,25 @@ default:
 install:
     pip install -r requirements.txt
 
-# Run the scraper (discovers URLs via browser, then fetches markdown)
+# Run the scraper (discovers pages from the site manifests, then fetches markdown)
 scrape:
     python scrape_openai_docs.py
 
-# Force re-download all pages
-scrape-force:
-    python scrape_openai_docs.py --force
-
-# Run without browser discovery (uses cached URLs)
+# Re-fetch using the cached page list, skipping the discovery requests
 scrape-cached:
     python scrape_openai_docs.py --no-discover
 
-# Clean generated markdown files and URL cache
+# Fetch only pages missing from docs/ (development shortcut)
+scrape-missing:
+    python scrape_openai_docs.py --no-discover --skip-existing --no-prune
+
+# Clean generated markdown files and the page cache, keeping docs/plans
 clean:
-    rm -rf docs/
+    find docs -mindepth 1 -maxdepth 1 ! -name plans -exec rm -rf {} +
 
 # Copy generated docs to openai-markdown-docs repo
 export docs_repo="../openai-markdown-docs":
     rm -rf {{docs_repo}}/api-reference
-    cp -r docs {{docs_repo}}/api-reference
+    mkdir -p {{docs_repo}}/api-reference
+    rsync -a --exclude='plans/' docs/ {{docs_repo}}/api-reference/
     @echo "Docs exported to {{docs_repo}}/api-reference"
