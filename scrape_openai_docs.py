@@ -220,6 +220,9 @@ def fix_links(content: str, link_map: dict[str, Path], page: dict) -> str:
 
     def replace(match: re.Match) -> str:
         text, url = match.groups()
+        # Some pages link to each other by full URL; treat those as site paths.
+        if url.startswith(f"{BASE_URL}/"):
+            url = url.removeprefix(BASE_URL)
         if url.startswith(("http://", "https://", "#", "mailto:")):
             return match.group(0)
 
